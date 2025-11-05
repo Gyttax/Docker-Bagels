@@ -1,0 +1,7 @@
+services:
+  bagels-game:
+    build: .
+    container_name: bagels_container
+    command: python game.py
+    stdin_open: true # Permite la entrada de usuario
+    tty: true # Habilita un terminal interactivo
