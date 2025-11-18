@@ -1,13 +1,13 @@
-import random
+import random  # Importa el módulo random para generar números aleatorios
 
-digits = 3  # cambialo después
-max_guesses = 10  # cambialo después
+DIGITS = 3  # Puedes cambiarlo después para números de más dígitos
+MAX_GUESSES = 10  # Puedes cambiarlo después para más intentos
 
 
 def main():
 
     print(
-        f"""¡Bienvenido/a al juego Bagels! Un juego de deducción lógica. Estoy pensando en un número de {digits} dígitos. ¡Intenta adivinarlo! Aquí tienes algunas pistas:
+        f"""¡Bienvenido/a al juego Bagels! Un juego de deducción lógica. Estoy pensando en un número de {DIGITS} dígitos. ¡Intenta adivinarlo! Aquí tienes algunas pistas:
         
         Cuando digo:    Eso significa:
         
@@ -15,57 +15,70 @@ def main():
         Fermi           Un dígito es correcto y está en la posición correcta.
         Bagels          Ningún dígito es correcto.
 
-Por ejemplo, si el número secreto fuera 248 y tu conjetura fuera 843, la pista sería 'Fermi Pico'.""".format(
-            digits
-        )
+Por ejemplo, si el número secreto fuera 248 y tu conjetura fuera 843, la pista sería 'Fermi Pico'.
+
+¡Vamos a jugar! ¡Buena suerte!"""
     )
 
     while True:  # Main loop del juego
 
-        secretNum = generate_secret_number()
+        secretNum = (
+            generate_secret_number()
+        )  # Genera un número de N dígitos aleatorio sin repeticiones
         print("\nHe pensado un número. ¡Adivina cuál es!")
-        print(f"(Tienes {max_guesses} intentos para adivinarlo.)".format(max_guesses))
-
-        print(secretNum)  # Línea para pruebas, eliminar en producción
+        print(f"Tienes {MAX_GUESSES} intentos para adivinarlo.")
 
         numGuesses = 1
 
-        while numGuesses <= max_guesses:
+        while numGuesses <= MAX_GUESSES:
 
             guess = ""
-            while len(guess) != digits or not guess.isdecimal():
+            while len(guess) != DIGITS or not guess.isdecimal():
                 print(f"\nIntento #{numGuesses}: ")
-                guess = print(input("> "))
+                guess = input("> ")  # Recepción de la respuesta del usuario
 
-            clues = get_clues(guess, secretNum)
+                if (
+                    len(guess) != DIGITS
+                ):  # Validación de la longitud de dígitos recibida
+                    print(f"\nIngresa exactamente {DIGITS} dígitos: ")
+
+                elif not guess.isdecimal():  # Validación de que la entrada sea numérica
+                    print(f"\nIngresa solo números: ")
+
+            clues = get_clues(
+                guess, secretNum
+            )  # Obtención de pistas basadas en la conjetura
             print(clues)
-            numGuesses += 1
+            numGuesses += 1  # Incremento del número de intentos
 
-            if guess == secretNum:
+            if guess == secretNum:  # Si el usuario acierta
                 print("¡Felicidades! ¡Has adivinado el número!")
                 break
 
-            if numGuesses > max_guesses:
+            if numGuesses > MAX_GUESSES:  # Si el usuario no logra adivinar
                 print("¡Se te han acabado los intentos!")
-                print(f"El número era {secretNum}.")
+                print(f"El número era {secretNum}.")  # Se revela el número secreto
 
-        respuesta = input("¿Quieres jugar de nuevo? (s/n) \n>>> ")
-        if not respuesta.lower().startswith("s"):
+        respuesta = input(
+            "¿Quieres jugar de nuevo? (s/n) \n>>> "
+        )  # Pregunta para reiniciar el juego
+        if not respuesta.lower().startswith(
+            "s"
+        ):  # Si la respuesta no es afirmativa, se termina el juego
             break
 
     print("¡Gracias por jugar!")
 
 
 def generate_secret_number():
-
-    # Este apartado estará generando el número secreto para adivinar
-    # La condición principal es que ningún dígito se repita por lo tanto:
+    """Este apartado estará generando el número secreto para adivinar
+    La condición principal es que ningún dígito se repita por lo tanto:"""
 
     numbers = list("0123456789")
     random.shuffle(numbers)  # Mezcla los números aleatoriamente
 
     secretNum = ""
-    for i in range(digits):
+    for i in range(DIGITS):
         secretNum += str(
             numbers[i]
         )  # Selecciona los primeros 'digits' números de la lista mezclada
@@ -79,7 +92,7 @@ def get_clues(guess, secretNum):
 
     clues = []
 
-    for i in range(len(guess)):
+    for i in range(len(guess)):  # Recorre cada dígito en la conjetura
 
         if guess[i] == secretNum[i]:
             clues.append("Fermi")  # Dígito correcto en la posición correcta
